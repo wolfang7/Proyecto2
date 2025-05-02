@@ -1,19 +1,37 @@
-package universities;
+import java.util.List;
+import java.util.Scanner;
 
-import java.util.ArrayList;
+public class ProfessorManager {
 
-public class ProfessorManager extends Professor {
-    private long email;
-    private String name;
+    public static void añadirLecturer(List<Professor> professors, Scanner sc) {
+        try {
+            System.out.println("Ingrese el nombre del Lecturer:");
+            String name = sc.nextLine();
 
-    public ProfessorManager() {
-    }
-    public ProfessorManager(long email, String name) {
-        this.email = email;
-        this.name = name;
-    }
+            for (Professor p : professors) {
+                if (p.getName().equalsIgnoreCase(name)) {
+                    throw new YaExisteProfessor("Ya existe un profesor con ese nombre.");
+                }
+            }
 
-    public calcularSalario(){
+            System.out.println("Ingrese su ID:");
+            String id = sc.nextLine();
 
+            System.out.println("Ingrese horas por mes:");
+            int hours = Integer.parseInt(sc.nextLine());
+
+            System.out.println("Ingrese tarifa por hora:");
+            double rate = Double.parseDouble(sc.nextLine());
+
+            Lecturer newLecturer = new Lecturer(name, id, hours, rate);
+            professors.add(newLecturer);
+
+            System.out.println("Lecturer agregado exitosamente.");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Debe ingresar un número válido.");
+        } catch (YaExisteProfessor | LecturaInvalida e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }
