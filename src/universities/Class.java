@@ -1,14 +1,15 @@
 package universities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Class {
     private long code;
     private String name;
     private boolean isOpen;
     private long horario;
-    private Professor professor; // Quien dicta la clase
-    private List<Student> students; // Quienes estan inscritos a la clase
+    private Professor professor;
+    private List<Student> students;
 
     public Class(long code, String name, long horario, Professor professor) {
         this.code = code;
