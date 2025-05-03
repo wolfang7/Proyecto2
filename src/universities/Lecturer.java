@@ -2,8 +2,8 @@ public class Lecturer extends Professor {
     private int hoursPerMonth;
     private double hourlyRate;
 
-    public Lecturer(String name, String id, int hoursPerMonth, double hourlyRate) throws LecturaInvalida {
-        super(name, id);
+    public Lecturer(String email, String name, int hoursPerMonth, double hourlyRate) throws LecturaInvalida {
+        super(email, name);
 
         if (hoursPerMonth < 0) {
             throw new LecturaInvalida("Las horas por mes no pueden ser negativas.");
@@ -17,7 +17,7 @@ public class Lecturer extends Professor {
     }
 
     @Override
-    public double calculateSalary() {
+    public double calcularSalario() {
         return hoursPerMonth * hourlyRate;
     }
 

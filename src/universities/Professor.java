@@ -1,17 +1,19 @@
+package universities;
 public abstract class Professor {
+    protected String email;
     protected String name;
-    protected String id;
 
-    public Professor(String name, String id) {
+    public Professor(String email, String name) {
+        this.email = email;
         this.name = name;
-        this.id = id;
     }
 
-    public abstract double calculateSalary();
+    public String getEmail() {
+        return email;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getName() {
+        return name;
+    }
+    public abstract double calcularSalario();
 }
