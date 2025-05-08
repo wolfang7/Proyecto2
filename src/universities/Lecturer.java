@@ -1,15 +1,17 @@
+package universities;
+
 public class Lecturer extends Professor {
     private int hoursPerMonth;
     private double hourlyRate;
 
-    public Lecturer(String email, String name, int hoursPerMonth, double hourlyRate) throws LecturaInvalida {
+    public Lecturer(long email, String name, int hoursPerMonth, double hourlyRate) throws LecturaInvalidaException {
         super(email, name);
 
         if (hoursPerMonth < 0) {
-            throw new LecturaInvalida("Las horas por mes no pueden ser negativas.");
+            throw new LecturaInvalidaException("Las horas por mes no pueden ser negativas.");
         }
         if (hourlyRate <= 0) {
-            throw new LecturaInvalida("La tarifa por hora debe ser mayor a cero.");
+            throw new LecturaInvalidaException("La tarifa por hora debe ser mayor a cero.");
         }
 
         this.hoursPerMonth = hoursPerMonth;
@@ -21,16 +23,16 @@ public class Lecturer extends Professor {
         return hoursPerMonth * hourlyRate;
     }
 
-    public void setHoursPerMonth(int hoursPerMonth) throws LecturaInvalida {
+    public void setHoursPerMonth(int hoursPerMonth) throws LecturaInvalidaException {
         if (hoursPerMonth < 0) {
-            throw new LecturaInvalida("Las horas por mes no pueden ser negativas.");
+            throw new LecturaInvalidaException("Las horas por mes no pueden ser negativas");
         }
         this.hoursPerMonth = hoursPerMonth;
     }
 
-    public void setHourlyRate(double hourlyRate) throws LecturaInvalida {
+    public void setHourlyRate(double hourlyRate) throws LecturaInvalidaException {
         if (hourlyRate <= 0) {
-            throw new LecturaInvalida("La tarifa por hora debe ser mayor a cero.");
+            throw new LecturaInvalidaException("La tarifa por hora debe ser mayor a cero");
         }
         this.hourlyRate = hourlyRate;
     }

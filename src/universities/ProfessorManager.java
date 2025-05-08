@@ -1,37 +1,30 @@
+package universities;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+
+import static universities.ProfessorCategory.*;
 
 public class ProfessorManager {
 
-    public static void añadirLecturer(List<Professor> professors, Scanner sc) {
+    public static void llenarProfesoresUniversidad(University university) {
+
+        List<Professor> professors = new ArrayList<>();
+
+        professors.add(new FullProfessor(201,"Manuel Sanabria", ASSISTANT));
+        professors.add(new FullProfessor(243,"Oscar Ortíz", ASSOCIATE));
+        professors.add(new FullProfessor(325,"Esteban Sandoval", REGULAR));
         try {
-            System.out.println("Ingrese el nombre del Lecturer:");
-            String name = sc.nextLine();
-
-            for (Professor p : professors) {
-                if (p.getName().equalsIgnoreCase(name)) {
-                    throw new YaExisteProfessor("Ya existe un profesor con ese nombre.");
-                }
-            }
-
-            System.out.println("Ingrese su ID:");
-            String id = sc.nextLine();
-
-            System.out.println("Ingrese horas por mes:");
-            int hours = Integer.parseInt(sc.nextLine());
-
-            System.out.println("Ingrese tarifa por hora:");
-            double rate = Double.parseDouble(sc.nextLine());
-
-            Lecturer newLecturer = new Lecturer(name, id, hours, rate);
-            professors.add(newLecturer);
-
-            System.out.println("Lecturer agregado exitosamente.");
-
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Debe ingresar un número válido.");
-        } catch (YaExisteProfessor | LecturaInvalida e) {
+            professors.add(new Lecturer(546, "Juan Carlos Quevedo", 20, 48));
+            professors.add(new Lecturer(564, "Sara Rodríguez", 21, 50));
+            professors.add(new Lecturer(233, "Manuel Pérez", 12, 35));
+            professors.add(new Lecturer(453, "Oscar Prieto", 11, 45));
+            professors.add(new Lecturer(234, "Alejandro Bautista", 30, 38));
+            professors.add(new Lecturer(231, "Juan Rosales", 15, 42));
+            professors.add(new Lecturer(121, "Sara Agut", 50, 37));
+        }
+        catch (LecturaInvalidaException e) {
             System.out.println("Error: " + e.getMessage());
         }
+        university.getProfessors().addAll(professors);
     }
 }
