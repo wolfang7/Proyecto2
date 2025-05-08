@@ -7,11 +7,11 @@ public class Principal {
     public static void main(String[] args) throws ProfessorNoEncontradoException {
         University uni = new University();
         Scanner sc = new Scanner(System.in);
+
         ProfessorManager.llenarProfesoresUniversidad(uni);
         StudentManager.cargarEstudiantesDesdeArchivo(uni, "src/estudiantes.txt");
+        University.llenarClasesUniversidad(uni);
 
-        uni.getClasses().add(new Class(2001, "POO", true, 22, uni.getProfessors().get(0)));
-        uni.getClasses().add(new Class(2002, "Bases de Datos", true, 12, uni.getProfessors().get(1)));
         int opcion;
         do {
             System.out.println("--- MENÚ UNIVERSIDAD ---");
