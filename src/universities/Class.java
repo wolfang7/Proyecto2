@@ -14,6 +14,7 @@ public class Class {
     public Class(long code, String name, boolean isOpen, long horario, Professor professor) {
         this.code = code;
         this.name = name;
+        this.isOpen = isOpen;
         this.horario = horario;
         this.professor = professor;
     }
