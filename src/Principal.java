@@ -4,6 +4,117 @@ import universities.Class;
 import java.util.Scanner;
 
 public class Principal {
+
+    public static void agregarProfesor(University uni, Scanner sc) throws TipoDeProfessorInvalidoException, CategoriaInvalidaException, YaExisteProfessorException, LecturaInvalidaException {
+        System.out.print("Tipo de profesor que desea agregar (planta o cátedra): ");
+        String TipoProfesor = sc.nextLine();
+        if (TipoProfesor.equalsIgnoreCase("planta")) {
+            System.out.print("email: ");
+            String emailProfessor = sc.nextLine();
+            System.out.print("name: ");
+            String nameProfessor = sc.nextLine();
+            System.out.print("Categoría (ASSISTANT, ASSOCIATE o REGULAR): ");
+            String categoria= sc.nextLine();
+            ProfessorCategory categoryProfessor;
+            if (categoria.equalsIgnoreCase("ASSISTANT")) {
+                categoryProfessor = ProfessorCategory.ASSISTANT;
+            } else if (categoria.equalsIgnoreCase("ASSOCIATE")) {
+                categoryProfessor = ProfessorCategory.ASSOCIATE;
+            }
+            else if (categoria.equalsIgnoreCase("REGULAR")) {
+                categoryProfessor = ProfessorCategory.REGULAR;
+            }
+            else{
+                throw new CategoriaInvalidaException("Categoria inválida");
+            }
+            FullProfessor nuevoProfesorF = new FullProfessor(emailProfessor, nameProfessor, categoryProfessor);
+            for(Professor p : uni.getProfessors()){
+                if (p.getName().equalsIgnoreCase(nameProfessor)) {
+                    throw new YaExisteProfessorException("Ya existe un profesor con el nombre." + nameProfessor);
+                }
+            }
+            uni.getProfessors().add(nuevoProfesorF);
+            System.out.println("Profesor agregado");
+
+        }
+        else if (TipoProfesor.equalsIgnoreCase("cátedra") | TipoProfesor.equalsIgnoreCase("catedra")){
+            System.out.print("email: ");
+            String emailProfessor = sc.nextLine();
+            System.out.print("name: ");
+            String nameProfessor = sc.nextLine();
+            System.out.print("Tarifa por hora: ");
+            double rateProfesor= sc.nextDouble();
+            System.out.print("Horas por mes: ");
+            int horasProfesor= sc.nextInt();
+            Lecturer nuevoProfesorL = new Lecturer(emailProfessor, nameProfessor, horasProfesor, rateProfesor);
+            for(Professor p : uni.getProfessors()){
+                if (p.getName().equalsIgnoreCase(nameProfessor)) {
+                    throw new YaExisteProfessorException("Ya existe un profesor con el nombre." + nameProfessor + " y el email." + emailProfessor);
+                }
+            }
+            uni.getProfessors().add(nuevoProfesorL);
+            System.out.println("Profesor agregado");
+
+        }
+        else{
+            throw new TipoDeProfessorInvalidoException("Tipo de profesor inválido.");
+        }
+    }
+    public static void eliminarProfesor(University uni, Scanner sc) throws ProfessorNoEncontradoException, CriterioInvalidoException, CategoriaInvalidaException, LecturaInvalidaException {
+        System.out.println("Por qué criterio desea buscar al profesor que desea eliminar? (name o category): ");
+        String criterio = sc.nextLine();
+        if (criterio.equalsIgnoreCase("name")) {
+            System.out.println("Nombre del profesor que desea eliminar: ");
+            String nameProfesor = sc.nextLine();
+            boolean encontrado = false;
+            for (Professor p : uni.getProfessors()) {
+                if (p.getName().equalsIgnoreCase(nameProfesor)) {
+                    uni.getProfessors().remove(p);
+                    System.out.println("Profesor eliminado por nombre.");
+                    encontrado = true;
+                }
+            }
+            if (encontrado == false) {
+                throw new ProfessorNoEncontradoException("Profesor no encontrado por ese nombre");
+            }
+        } else if (criterio.equalsIgnoreCase("category")) {
+            System.out.println("Categoria del profesor que desea eliminar: ");
+            String categoria = sc.nextLine();
+            ProfessorCategory categoryProfessor;
+            if (categoria.equalsIgnoreCase("ASSISTANT")) {
+                categoryProfessor = ProfessorCategory.ASSISTANT;
+            } else if (categoria.equalsIgnoreCase("ASSOCIATE")) {
+                categoryProfessor = ProfessorCategory.ASSOCIATE;
+            } else if (categoria.equalsIgnoreCase("REGULAR")) {
+                categoryProfessor = ProfessorCategory.REGULAR;
+            } else {
+                throw new CategoriaInvalidaException("Categoria inválida");
+            }
+            boolean encontrado = false;
+            for (Professor p : uni.getProfessors()) {
+                if (p instanceof FullProfessor) {
+                    FullProfessor pFullProfessor = (FullProfessor) p;
+                    if (pFullProfessor.getCategory() == categoryProfessor) {
+                        uni.getProfessors().remove(p);
+                        System.out.println("Profesor eliminado por categoria");
+                        encontrado = true;
+                    }
+                }
+            }
+            if (encontrado == false) {
+                throw new ProfessorNoEncontradoException("Profesor no encontrado por esa categoria");
+            }
+        }
+    }
+    public static void calcularNomina(University uni) {
+        double totalNomina = 0.0;
+        for(Professor p : uni.getProfessors()){
+            totalNomina += p.calcularSalario();
+        }
+        System.out.println("Nómina total: $" + totalNomina);
+    }
+
+
     public static void main(String[] args) throws ProfessorNoEncontradoException {
         University uni = new University();
         Scanner sc = new Scanner(System.in);
@@ -36,17 +147,17 @@ public class Principal {
                         String nombre = sc.nextLine();
 
                         System.out.println("Horario:");
-                        long horario = sc.nextLong();
+                        String horario = sc.nextLine();
 
                         System.out.println("¿Está abierta? (true/false):");
                         boolean abierta = Boolean.parseBoolean(sc.nextLine());
 
                         System.out.println("Correo del profesor:");
-                        long email = Long.parseLong(sc.nextLine());
+                        String email = sc.nextLine();
 
                         Professor profe = null;
                         for (Professor p : uni.getProfessors()) {
-                            if (p.getEmail() == email) {
+                            if (email.equalsIgnoreCase(p.getEmail()) ) {
                                 profe = p;
                                 break;
                             }
@@ -145,58 +256,8 @@ public class Principal {
                 }
 
                 case 5:
-                    boolean error5 = true;
-                    while(error5) {
-                        try {
-                            System.out.print("Tipo de profesor que desea agregar (planta o cátedra): ");
-                            String TipoProfesor = sc.nextLine();
-                            System.out.print("email: ");
-                            long emailProfessor = sc.nextLong();
-                            System.out.print("name: ");
-                            String nameProfessor = sc.nextLine();
-                            if (TipoProfesor.equalsIgnoreCase("planta")) {
-                                System.out.print("Categoría (ASSISTANT, ASSOCIATE o REGULAR): ");
-                                String categoria= sc.nextLine();
-                                ProfessorCategory categoryProfessor;
-                                if (categoria.equalsIgnoreCase("ASSISTANT")) {
-                                    categoryProfessor = ProfessorCategory.ASSISTANT;
-                                } else if (categoria.equalsIgnoreCase("ASSOCIATE")) {
-                                    categoryProfessor = ProfessorCategory.ASSOCIATE;
-                                }
-                                else if (categoria.equalsIgnoreCase("REGULAR")) {
-                                    categoryProfessor = ProfessorCategory.REGULAR;
-                                }
-                                else{
-                                    throw new CategoriaInvalidaException("Categoria inválida");
-                                }
-                                FullProfessor nuevoProfesorF = new FullProfessor(emailProfessor, nameProfessor, categoryProfessor);
-                                for(Professor p : uni.getProfessors()){
-                                    if (p.getName().equalsIgnoreCase(nameProfessor)) {
-                                        throw new YaExisteProfessorException("Ya existe un profesor con el nombre." + nameProfessor);
-                                    }
-                                }
-                                uni.getProfessors().add(nuevoProfesorF);
-                                System.out.println("Profesor agregado");
-
-                            }
-                            else if (TipoProfesor.equalsIgnoreCase("cátedra") | TipoProfesor.equalsIgnoreCase("catedra")){
-                                System.out.print("Tarifa por hora: ");
-                                double rateProfesor= sc.nextDouble();
-                                System.out.print("Horas por mes: ");
-                                int horasProfesor= sc.nextInt();
-                                Lecturer nuevoProfesorL = new Lecturer(emailProfessor, nameProfessor, horasProfesor, rateProfesor);
-                                for(Professor p : uni.getProfessors()){
-                                    if (p.getName().equalsIgnoreCase(nameProfessor)) {
-                                        throw new YaExisteProfessorException("Ya existe un profesor con el nombre." + nameProfessor + " y el email." + emailProfessor);
-                                    }
-                                }
-                                uni.getProfessors().add(nuevoProfesorL);
-                                System.out.println("Profesor agregado");
-
-                            }
-                            else{
-                                throw new TipoDeProfessorInvalidoException("Tipo de profesor inválido.");
-                            }
+                    try {
+                            agregarProfesor( uni, sc);
                         }
                         catch (TipoDeProfessorInvalidoException e) {
                             System.out.println("Error: " + e.getMessage());
@@ -212,61 +273,11 @@ public class Principal {
                         catch (LecturaInvalidaException e) {
                             System.out.println("Error en el formato de la fecha, intente de nuevo");
                         }
-
-
                 break;
-            }
 
             case 6: {
-                boolean error6 = true;
                 try {
-                    System.out.println("Por qué criterio desea buscar al profesor que desea eliminar? (name o category): ");
-                    String criterio = sc.nextLine();
-                    if (criterio.equalsIgnoreCase("name")) {
-                        System.out.println("Nombre del profesor que desea eliminar: ");
-                        String nameProfesor = sc.nextLine();
-                        boolean encontrado = false;
-                        for (Professor p : uni.getProfessors()) {
-                            if (p.getName().equalsIgnoreCase(nameProfesor)) {
-                                uni.getProfessors().remove(p);
-                                System.out.println("Profesor eliminado por nombre.");
-                                encontrado = true;
-                            }
-                        }
-                        if (encontrado == false){
-                            throw new ProfessorNoEncontradoException("Profesor no encontrado por ese nombre");
-                        }
-                    } else if (criterio.equalsIgnoreCase("category")) {
-                        System.out.println("Categoria del profesor que desea eliminar: ");
-                        String categoria= sc.nextLine();
-                        ProfessorCategory categoryProfessor;
-                        if (categoria.equalsIgnoreCase("ASSISTANT")) {
-                            categoryProfessor = ProfessorCategory.ASSISTANT;
-                        } else if (categoria.equalsIgnoreCase("ASSOCIATE")) {
-                            categoryProfessor = ProfessorCategory.ASSOCIATE;
-                        }
-                        else if (categoria.equalsIgnoreCase("REGULAR")) {
-                            categoryProfessor = ProfessorCategory.REGULAR;
-                        }
-                        else{
-                            throw new CategoriaInvalidaException("Categoria inválida");
-                        }
-                        boolean encontrado = false;
-                        for (Professor p : uni.getProfessors()) {
-                            if (p instanceof FullProfessor) {
-                                FullProfessor pFullProfessor = (FullProfessor) p;
-                                if (pFullProfessor.getCategory() == categoryProfessor) {
-                                    uni.getProfessors().remove(p);
-                                    System.out.println("Profesor eliminado por categoria");
-                                    encontrado = true;
-                                }
-                            }
-                        }
-                        if (encontrado == false){
-                            throw new ProfessorNoEncontradoException("Profesor no encontrado por esa categoria");
-                        }
-
-                    }
+                    eliminarProfesor(uni, sc);
 
                 } catch (ProfessorNoEncontradoException e) {
                     System.out.println("Error: " + e.getMessage());
@@ -277,15 +288,14 @@ public class Principal {
                 catch (CategoriaInvalidaException e) {
                     System.out.println("Criterio ingresado es inválido, intentelo de nuevo.");
                 }
+                catch (LecturaInvalidaException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             }
 
             case 7: {
-                double totalNomina = 0.0;
-                for(Professor p : uni.getProfessors()){
-                    totalNomina += p.calcularSalario();
-                }
-                System.out.println("Nómina total: $" + totalNomina);
+                calcularNomina( uni);
                 break;
             }
 

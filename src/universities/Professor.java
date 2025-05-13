@@ -1,14 +1,14 @@
 package universities;
 public abstract class Professor {
-    protected long email;
+    protected String email;
     protected String name;
 
-    public Professor(long email, String name) {
+    public Professor(String email, String name) {
         this.email = email;
         this.name = name;
     }
 
-    public long getEmail() {
+    public String getEmail() {
         return email;
     }
 
