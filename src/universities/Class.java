@@ -7,11 +7,11 @@ public class Class {
     private long code;
     private String name;
     private boolean isOpen;
-    private long horario;
+    private String horario;
     private Professor professor;
     private List<Student> students=new ArrayList<>();
 
-    public Class(long code, String name, boolean isOpen, long horario, Professor professor) {
+    public Class(long code, String name, boolean isOpen, String horario, Professor professor) {
         this.code = code;
         this.name = name;
         this.isOpen = isOpen;
@@ -31,7 +31,7 @@ public class Class {
         return isOpen;
     }
 
-    public long getHorario() {
+    public String getHorario() {
         return horario;
     }
 

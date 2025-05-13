@@ -4,7 +4,7 @@ public class Lecturer extends Professor {
     private int hoursPerMonth;
     private double hourlyRate;
 
-    public Lecturer(long email, String name, int hoursPerMonth, double hourlyRate) throws LecturaInvalidaException {
+    public Lecturer(String email, String name, int hoursPerMonth, double hourlyRate) throws LecturaInvalidaException {
         super(email, name);
 
         if (hoursPerMonth < 0) {
