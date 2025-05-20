@@ -5,6 +5,156 @@ import java.util.Scanner;
 
 public class Principal {
 
+    public static void crearClase(University uni, Scanner sc)
+    {
+        try {
+            System.out.println("Codigo de clase:");
+            long cod = Long.parseLong(sc.nextLine());
+
+            System.out.println("Nombre:");
+            String nombre = sc.nextLine();
+
+            System.out.println("Horario:");
+            String horario = sc.nextLine();
+
+            boolean abierta = false;
+
+            System.out.println("¿Está abierta? (true/false):");
+            String abierta1 = sc.nextLine();
+            while (!abierta1.equalsIgnoreCase("true") && !abierta1.equalsIgnoreCase("false")) {
+                System.out.println("¿Está abierta? (true/false):");
+                abierta1 = sc.nextLine();
+            }
+
+            if (abierta1.equalsIgnoreCase("true")) {
+                abierta = true;
+            } else if (abierta1.equalsIgnoreCase("true")) {
+                abierta = false;
+            }
+            System.out.println("Correo del profesor:");
+            String email = sc.nextLine();
+
+            Professor profe = null;
+            for (Professor p : uni.getProfessors()) {
+                if (email.equalsIgnoreCase(p.getEmail())) {
+                    profe = p;
+                    break;
+                }
+            }
+
+            if (profe == null) {
+                System.out.println("Profesor no encontrado.");
+                return;
+            }
+
+            Class nueva = new Class(cod, nombre, abierta, horario, profe);
+
+            for (Class c : uni.getClasses()) {
+                if (nueva.conflictoHorario(c)) {
+                    System.out.println("Conflicto de horario con otra clase del mismo profesor.");
+                    throw new Exception("No se puede crear la clase.");
+                }
+            }
+
+            uni.getClasses().add(nueva);
+            System.out.println("Clase creada.");
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    public static void buscarClaseCodigo(University uni, Scanner sc)
+    {
+        try
+        {
+            System.out.println("Codigo de clase a buscar:");
+            long cod = Long.parseLong(sc.nextLine());
+            boolean encontrado = false;
+            for (Class c : uni.getClasses()) {
+                if (c.getCode() == cod) {
+                    System.out.println("Clase encontrada: " + c.getName() + " - " + c.getHorario());
+                    encontrado = true;
+                }
+            }
+            if (!encontrado)
+            {
+                System.out.println("Clase no encontrada.");
+            }
+        }catch (Exception e)
+        {
+            System.out.println("Error: "+e.getMessage());
+        }
+    }
+
+    public static void inscribirEstudianteClase(University uni, Scanner sc)
+    {
+        try {
+            System.out.println("Código del estudiante:");
+            long codEst = Long.parseLong(sc.nextLine());
+
+            System.out.println("Código de la clase:");
+            long codClase = Long.parseLong(sc.nextLine());
+
+            Student s = null;
+            Class c = null;
+
+            for (Student st : uni.getStudents()) {
+                if (st.getCode() == codEst) {
+                    s = st;
+                    break;
+                }
+            }
+
+            for (Class cl : uni.getClasses()) {
+                if (cl.getCode() == codClase) {
+                    c = cl;
+                    break;
+                }
+            }
+
+            if (s == null || c == null) {
+                throw new Exception("Clase o estudiante no encontrado.");
+            }
+
+            s.inscribirClase(c);
+            c.inscribirEstudiante(s);
+            System.out.println("Estudiante inscrito.");
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void mostrarEstudiantesInscritos(University uni, Scanner sc)
+    {
+        try
+        {
+            System.out.println("Codigo de clase: ");
+            long cod=Long.parseLong(sc.nextLine());
+            boolean encontrado=false;
+            for(Class c: uni.getClasses())
+            {
+                if(c.getCode()==cod)
+                {
+                    System.out.println("Estudiantes inscritos en "+c.getName()+ ":");
+                    for(Student s: c.getStudents())
+                    {
+                        System.out.println("-"+ s.getName());
+                    }
+                    encontrado=true;
+                }
+            }
+            if (!encontrado)
+            {
+                System.out.println("Clase no encontrada");
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error: "+e.getMessage());
+        }
+    }
+
     public static void agregarProfesor(University uni, Scanner sc) throws TipoDeProfessorInvalidoException, CategoriaInvalidaException, YaExisteProfessorException, LecturaInvalidaException {
         System.out.print("Tipo de profesor que desea agregar (planta o cátedra): ");
         String TipoProfesor = sc.nextLine();
@@ -44,8 +194,10 @@ public class Principal {
             String nameProfessor = sc.nextLine();
             System.out.print("Tarifa por hora: ");
             double rateProfesor= sc.nextDouble();
+            sc.nextLine();
             System.out.print("Horas por mes: ");
             int horasProfesor= sc.nextInt();
+            sc.nextLine();
             Lecturer nuevoProfesorL = new Lecturer(emailProfessor, nameProfessor, horasProfesor, rateProfesor);
             for(Professor p : uni.getProfessors()){
                 if (p.getName().equalsIgnoreCase(nameProfessor)) {
@@ -139,176 +291,79 @@ public class Principal {
 
             switch (opcion) {
                 case 1: {
-                    try {
-                        System.out.println("Código de clase:");
-                        long cod = Long.parseLong(sc.nextLine());
-
-                        System.out.println("Nombre:");
-                        String nombre = sc.nextLine();
-
-                        System.out.println("Horario:");
-                        String horario = sc.nextLine();
-
-                        System.out.println("¿Está abierta? (true/false):");
-                        boolean abierta = Boolean.parseBoolean(sc.nextLine());
-
-                        System.out.println("Correo del profesor:");
-                        String email = sc.nextLine();
-
-                        Professor profe = null;
-                        for (Professor p : uni.getProfessors()) {
-                            if (email.equalsIgnoreCase(p.getEmail()) ) {
-                                profe = p;
-                                break;
-                            }
-                        }
-
-                        if (profe == null) {
-                            System.out.println("Profesor no encontrado.");
-                            break;
-                        }
-
-                        Class nueva = new Class(cod, nombre, abierta, horario, profe);
-
-                        for (Class c : uni.getClasses()) {
-                            if (nueva.conflictoHorario(c)) {
-                                System.out.println("Conflicto de horario con otra clase del mismo profesor.");
-                                throw new Exception("No se puede crear la clase.");
-                            }
-                        }
-
-                        uni.getClasses().add(nueva);
-                        System.out.println("Clase creada.");
-
-                    } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
-                    }
+                    crearClase(uni, sc);
                     break;
                 }
 
                 case 2: {
-                    System.out.println("Código de clase a buscar:");
-                    long cod = Long.parseLong(sc.nextLine());
-                    boolean encontrado = false;
-                    for (Class c : uni.getClasses()) {
-                        if (c.getCode() == cod) {
-                            System.out.println("Clase encontrada: " + c.getName() + " - " + c.getHorario());
-                            encontrado = true;
-                        }
-                    }
-                    if (!encontrado) {
-                        System.out.println("Clase no encontrada.");
-                    }
+                    buscarClaseCodigo(uni, sc);
                     break;
                 }
 
                 case 3: {
-                    try {
-                        System.out.println("Código del estudiante:");
-                        long codEst = Long.parseLong(sc.nextLine());
-
-                        System.out.println("Código de la clase:");
-                        long codClase = Long.parseLong(sc.nextLine());
-
-                        Student s = null;
-                        Class c = null;
-
-                        for (Student st : uni.getStudents()) {
-                            if (st.getCode() == codEst) {
-                                s = st;
-                                break;
-                            }
-                        }
-
-                        for (Class cl : uni.getClasses()) {
-                            if (cl.getCode() == codClase) {
-                                c = cl;
-                                break;
-                            }
-                        }
-
-                        if (s == null || c == null) {
-                            throw new Exception("Clase o estudiante no encontrado.");
-                        }
-
-                        s.inscribirClase(c);
-                        c.inscribirEstudiante(s);
-                        System.out.println("Estudiante inscrito.");
-
-                    } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
-                    }
+                    inscribirEstudianteClase(uni, sc);
                     break;
                 }
 
                 case 4: {
-                    System.out.println("Código de clase:");
-                    long cod = Long.parseLong(sc.nextLine());
-                    for (Class c : uni.getClasses()) {
-                        if (c.getCode() == cod) {
-                            System.out.println("Estudiantes inscritos en " + c.getName() + ":");
-                            for (Student s : c.getStudents()) {
-                                System.out.println("- " + s.getName());
-                            }
-                        }
-                    }
+                    mostrarEstudiantesInscritos(uni, sc);
                     break;
                 }
 
                 case 5:
                     try {
-                            agregarProfesor( uni, sc);
-                        }
-                        catch (TipoDeProfessorInvalidoException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        }
-                        catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                            System.out.println("Error en el formato de los datos");
-                        }
-                        catch (YaExisteProfessorException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        } catch (CategoriaInvalidaException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        }
-                        catch (LecturaInvalidaException e) {
-                            System.out.println("Error en el formato de la fecha, intente de nuevo");
-                        }
-                break;
+                        agregarProfesor( uni, sc);
+                    }
+                    catch (TipoDeProfessorInvalidoException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                        System.out.println("Error en el formato de los datos");
+                    }
+                    catch (YaExisteProfessorException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    } catch (CategoriaInvalidaException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    catch (LecturaInvalidaException e) {
+                        System.out.println("Error en el formato de la fecha, intente de nuevo");
+                    }
+                    break;
 
-            case 6: {
-                try {
-                    eliminarProfesor(uni, sc);
+                case 6: {
+                    try {
+                        eliminarProfesor(uni, sc);
 
-                } catch (ProfessorNoEncontradoException e) {
-                    System.out.println("Error: " + e.getMessage());
+                    } catch (ProfessorNoEncontradoException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                    catch (CriterioInvalidoException e) {
+                        System.out.println("Criterio ingresado es inválido, intentelo de nuevo.");
+                    }
+                    catch (CategoriaInvalidaException e) {
+                        System.out.println("Criterio ingresado es inválido, intentelo de nuevo.");
+                    }
+                    catch (LecturaInvalidaException e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
                 }
-                catch (CriterioInvalidoException e) {
-                    System.out.println("Criterio ingresado es inválido, intentelo de nuevo.");
+
+                case 7: {
+                    calcularNomina( uni);
+                    break;
                 }
-                catch (CategoriaInvalidaException e) {
-                    System.out.println("Criterio ingresado es inválido, intentelo de nuevo.");
-                }
-                catch (LecturaInvalidaException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
+
+                case 8:
+                    System.out.println("Gracias");
+                    break;
+
+                default:
+                    System.out.println("Opción inválida.");
             }
 
-            case 7: {
-                calcularNomina( uni);
-                break;
-            }
-
-            case 8:
-                System.out.println("Gracias");
-                break;
-
-            default:
-                System.out.println("Opción inválida.");
-        }
-
-    } while (opcion != 8);
+        } while (opcion != 8);
 
         sc.close();
-}
+    }
 }
